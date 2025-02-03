@@ -1,0 +1,20 @@
+{
+  "name": "inft-2202-ice",
+  "version": "1.0.0",
+  "description": "This is ice 1",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KaivanS2301/inft-2202-ice.git"
+  },
+  "author": "Kaivan Shah",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KaivanS2301/inft-2202-ice/issues"
+  },
+  "homepage": "https://github.com/KaivanS2301/inft-2202-ice#readme"
+}
