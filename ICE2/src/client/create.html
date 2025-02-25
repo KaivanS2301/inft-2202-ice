@@ -35,7 +35,45 @@ Description: This is the create page of the website.
     </nav>
 
     <div class="container mt-5">
-        <h1>Create Page</h1>
+        <h1>Create Animal</h1>
+        
+        <!-- Message Box for General Errors -->
+        <div id="message-box" class="alert alert-danger d-none"></div>
+
+        <!-- Animal Creation Form -->
+        <form id="animalForm" novalidate>
+            <div class="form-group mb-3">
+                <label for="breed">Breed:</label>
+                <input type="text" class="form-control" id="breed" name="breed" required>
+                <p class="text-danger d-none">Please enter a valid breed</p>
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="name">Name:</label>
+                <input type="text" class="form-control" id="name" name="name" required>
+                <p class="text-danger d-none">Please enter a valid name</p>
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="eyes">Number of Eyes:</label>
+                <input type="number" class="form-control" id="eyes" name="eyes" required min="0">
+                <p class="text-danger d-none">Please enter a valid number of eyes</p>
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="legs">Number of Legs:</label>
+                <input type="number" class="form-control" id="legs" name="legs" required min="0">
+                <p class="text-danger d-none">Please enter a valid number of legs</p>
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="sound">Sound:</label>
+                <input type="text" class="form-control" id="sound" name="sound" required>
+                <p class="text-danger d-none">Please enter a valid sound</p>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Create Animal</button>
+        </form>
     </div>
 
     <!-- Footer -->
@@ -44,6 +82,6 @@ Description: This is the create page of the website.
     </footer>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/js/fontawesome.min.js"></script>
-    <script src="../client/app/app.js"></script>
+    <script src="../client/app/animals/create.js"></script>
 </body>
 </html>
