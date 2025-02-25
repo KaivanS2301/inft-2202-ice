@@ -6,6 +6,9 @@
  * Description: This JavaScript file handles the animal creation functionality.
  */
 
+import animalService from './animal.mock.service.js';
+import Animal from './Animal.js';
+
 // Wait for the DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', function() {
     // Get the form element
@@ -99,39 +102,48 @@ function showSuccess(input) {
  * Handles form submission
  * @param {Event} event - The submit event
  */
-function submitAnimalForm(event) {
+async function submitAnimalForm(event) {
     event.preventDefault();
     
     const form = event.target;
     const messageBox = document.getElementById('message-box');
     
     if (validateAnimalForm(form)) {
-        // Form is valid - collect the data
-        const formData = {
-            breed: form.breed.value.trim(),
-            name: form.name.value.trim(),
-            eyes: parseInt(form.eyes.value),
-            legs: parseInt(form.legs.value),
-            sound: form.sound.value.trim()
-        };
-        
-        // Log the form data
-        console.log('Form Data:', formData);
-        
-        // Reset the form and show success message
-        form.reset();
-        messageBox.textContent = 'Animal created successfully!';
-        messageBox.classList.remove('alert-danger');
-        messageBox.classList.add('alert-success');
-        messageBox.classList.remove('d-none');
-        
-        // Clear success states
-        const inputs = form.querySelectorAll('input');
-        inputs.forEach(input => {
-            input.classList.remove('is-valid');
-        });
+        try {
+            const animal = new Animal({
+                name: form.name.value.trim(),
+                breed: form.breed.value.trim(),
+                eyes: parseInt(form.eyes.value),
+                legs: parseInt(form.legs.value),
+                sound: form.sound.value.trim()
+            });
+
+            animalService.createAnimal(animal);
+            
+            // Show success message with spinner
+            messageBox.innerHTML = `
+                <i class="fas fa-spinner fa-spin"></i> 
+                Animal created successfully! Redirecting...
+            `;
+            messageBox.classList.remove('alert-danger');
+            messageBox.classList.add('alert-success');
+            messageBox.classList.remove('d-none');
+
+            // Wait 3 seconds before redirecting
+            await new Promise(resolve => setTimeout(resolve, 3000));
+            window.location.href = 'list.html';
+            
+        } catch (error) {
+            // Show error under name field
+            showError(form.name, error.message);
+            
+            // Show general error message
+            messageBox.textContent = error.message;
+            messageBox.classList.add('alert-danger');
+            messageBox.classList.remove('alert-success');
+            messageBox.classList.remove('d-none');
+        }
     } else {
-        // Form is invalid - show general error message
         messageBox.textContent = 'Please fix the errors in the form.';
         messageBox.classList.add('alert-danger');
         messageBox.classList.remove('alert-success');
