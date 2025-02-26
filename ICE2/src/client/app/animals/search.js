@@ -10,12 +10,8 @@ import animalService from './animal.mock.service.js';
 
 // Wait for the DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', function() {
-    const messageBox = document.getElementById('message-box');
-    const table = document.getElementById('animals-list');
-    
-    // Always show message box and hide table
-    messageBox.classList.remove('d-none');
-    table.classList.add('d-none');
+    const animals = animalService.listAnimals();
+    toggleTableVisibility(animals);
 });
 
 /**
@@ -70,21 +66,15 @@ function drawAnimalsTable(animals) {
 
 // Make these functions available globally for the onclick handlers
 window.editAnimal = function(id) {
-    try {
-        const animal = animalService.findAnimal(id);
-        window.location.href = `edit.html?id=${id}`;
-    } catch (error) {
-        alert(error.message);
-    }
+    window.location.href = `create.html?id=${id}`;
 };
 
-window.deleteAnimal = async function(id) {
+window.deleteAnimal = function(id) {
     if (confirm('Are you sure you want to delete this animal?')) {
         try {
             const animal = animalService.findAnimal(id);
             animalService.deleteAnimal(animal);
             
-            // Refresh the table
             const animals = animalService.listAnimals();
             toggleTableVisibility(animals);
         } catch (error) {

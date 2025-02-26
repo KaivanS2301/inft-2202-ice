@@ -3,20 +3,53 @@
  * File name: create.js
  * Course: INFT 2202-07 Web Development - CSS  
  * Date: 2025-02-25
- * Description: This JavaScript file handles the animal creation functionality.
+ * Description: This JavaScript file handles the animal creation and editing functionality.
  */
 
 import animalService from './animal.mock.service.js';
 import Animal from './Animal.js';
 
+let editMode = false;
+let currentAnimal = null;
+
 // Wait for the DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', function() {
-    // Get the form element
     const animalForm = document.getElementById('animalForm');
-    
-    // Add submit event handler
     animalForm.addEventListener('submit', submitAnimalForm);
+
+    // Check if we're in edit mode
+    const params = new URL(window.location).searchParams;
+    const id = params.get('id');
+    
+    if (id) {
+        setupEditForm(id);
+    }
 });
+
+function setupEditForm(id) {
+    try {
+        currentAnimal = animalService.findAnimal(id);
+        editMode = true;
+
+        // Update heading
+        document.querySelector('h1').textContent = 'Edit Animal';
+
+        // Get form and populate fields
+        const form = document.getElementById('animalForm');
+        form.name.value = currentAnimal.name;
+        form.breed.value = currentAnimal.breed;
+        form.eyes.value = currentAnimal.eyes;
+        form.legs.value = currentAnimal.legs;
+        form.sound.value = currentAnimal.sound;
+
+        // Disable name field in edit mode
+        form.name.disabled = true;
+
+    } catch (error) {
+        alert(error.message);
+        window.location.href = 'search.html';
+    }
+}
 
 /**
  * Validates the animal form
@@ -110,20 +143,31 @@ async function submitAnimalForm(event) {
     
     if (validateAnimalForm(form)) {
         try {
-            const animal = new Animal({
-                name: form.name.value.trim(),
-                breed: form.breed.value.trim(),
-                eyes: parseInt(form.eyes.value),
-                legs: parseInt(form.legs.value),
-                sound: form.sound.value.trim()
-            });
-
-            animalService.createAnimal(animal);
+            if (editMode) {
+                // Update existing animal
+                currentAnimal.breed = form.breed.value.trim();
+                currentAnimal.eyes = parseInt(form.eyes.value);
+                currentAnimal.legs = parseInt(form.legs.value);
+                currentAnimal.sound = form.sound.value.trim();
+                
+                animalService.updateAnimal(currentAnimal);
+            } else {
+                // Create new animal
+                const animal = new Animal({
+                    name: form.name.value.trim(),
+                    breed: form.breed.value.trim(),
+                    eyes: parseInt(form.eyes.value),
+                    legs: parseInt(form.legs.value),
+                    sound: form.sound.value.trim()
+                });
+                
+                animalService.createAnimal(animal);
+            }
             
             // Show success message with spinner
             messageBox.innerHTML = `
                 <i class="fas fa-spinner fa-spin"></i> 
-                Animal created successfully! Redirecting...
+                Animal ${editMode ? 'updated' : 'created'} successfully! Redirecting...
             `;
             messageBox.classList.remove('alert-danger');
             messageBox.classList.add('alert-success');
@@ -131,13 +175,10 @@ async function submitAnimalForm(event) {
 
             // Wait 3 seconds before redirecting
             await new Promise(resolve => setTimeout(resolve, 3000));
-            window.location.href = 'list.html';
+            window.location.href = 'search.html';
             
         } catch (error) {
-            // Show error under name field
             showError(form.name, error.message);
-            
-            // Show general error message
             messageBox.textContent = error.message;
             messageBox.classList.add('alert-danger');
             messageBox.classList.remove('alert-success');

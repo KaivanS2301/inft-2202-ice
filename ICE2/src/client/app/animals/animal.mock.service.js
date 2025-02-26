@@ -66,4 +66,4 @@ AnimalService.prototype.deleteAnimal = function(animal) {
     return true;
 };
 
-export default new AnimalService();     
+export default new AnimalService(); 
