@@ -27,6 +27,7 @@ Description: This is the list page of the website.
                     <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="create.html">Create</a></li>
                     <li class="nav-item"><a class="nav-link active" href="list.html">List</a></li>
+                    <li class="nav-item"><a class="nav-link" href="search.html">Search</a></li>
                     <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
                     <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
                 </ul>
@@ -36,6 +37,25 @@ Description: This is the list page of the website.
 
     <div class="container mt-5">
         <h1>List Page</h1>
+        
+        <!-- Message Box -->
+        <div id="message-box" class="alert alert-info">
+            There are currently no animals in the database. Try adding some!
+        </div>
+
+        <!-- Animals Table -->
+        <table id="animals-list" class="table table-striped table-hover d-none">
+            <thead class="table-dark">
+                <tr>
+                    <th>Owner</th>
+                    <th>Details</th>
+                    <th>Controls</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Table rows will be inserted here dynamically -->
+            </tbody>
+        </table>
     </div>
 
     <!-- Footer -->
