@@ -2,7 +2,7 @@
  * Name: Kaivan Shah
  * File name: Animal.js
  * Course: INFT 2202-07 Web Development - CSS  
- * Date: 2025-02-25
+ * Date: 2025-02-27
  * Description: This JavaScript file defines the Animal model class.
  */
 

@@ -2,7 +2,7 @@
  * Name: Kaivan Shah
  * File name: create.js
  * Course: INFT 2202-07 Web Development - CSS  
- * Date: 2025-02-25
+ * Date: 2025-02-27
  * Description: This JavaScript file handles the animal creation and editing functionality.
  */
 
@@ -175,7 +175,7 @@ async function submitAnimalForm(event) {
 
             // Wait 3 seconds before redirecting
             await new Promise(resolve => setTimeout(resolve, 3000));
-            window.location.href = 'search.html';
+            window.location.href = 'list.html';
             
         } catch (error) {
             showError(form.name, error.message);
