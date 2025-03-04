@@ -2,7 +2,7 @@
  * Name: Kaivan Shah
  * File name: list.js
  * Course: INFT 2202-07 Web Development - CSS  
- * Date: 2025-02-27
+ * Date: 2025-03-04
  * Description: This JavaScript file handles the animal listing functionality.
  */
 
@@ -13,8 +13,27 @@ let currentPage = 1;
 
 // Wait for the DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', function() {
-    const animals = animalService.listAnimals();
-    toggleTableVisibility(animals);
+    const messageBox = document.getElementById('message-box');
+    const table = document.getElementById('animals-list');
+    
+    // Hide table and show message
+    if (table) {
+        table.classList.add('d-none');
+    }
+    
+    messageBox.classList.remove('d-none');
+    messageBox.innerHTML = `
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i>
+            Please use the <a href="search.html">Search page</a> to view all animals.
+        </div>
+    `;
+
+    // Highlight the List nav link
+    const listNavLink = document.querySelector('a.nav-link[href="list.html"]');
+    if (listNavLink) {
+        listNavLink.classList.add('active');
+    }
 });
 
 function toggleTableVisibility(animals) {

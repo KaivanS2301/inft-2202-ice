@@ -2,7 +2,7 @@
  * Name: Kaivan Shah
  * File name: search.js
  * Course: INFT 2202-07 Web Development - CSS  
- * Date: 2025-02-27
+ * Date: 2025-03-04
  * Description: This JavaScript file handles the animal search functionality.
  */
 
@@ -11,58 +11,119 @@ import animalService from './animal.mock.service.js';
 const ITEMS_PER_PAGE = 5;
 let currentPage = 1;
 
-// Wait for the DOM to be fully loaded
-document.addEventListener('DOMContentLoaded', function() {
-    const messageBox = document.getElementById('message-box');
-    const table = document.getElementById('animals-list');
-    
-    // Always show message box and hide table in search page
-    messageBox.classList.remove('d-none');
-    table.classList.add('d-none');
-});
+// Utility function to wait for a specified time
+function waitTho(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
-/**
- * Toggles visibility of table and message box based on animals list
- * @param {Array} animals - List of animals
- */
-function toggleTableVisibility(animals) {
+// Wait for the DOM to be fully loaded
+document.addEventListener('DOMContentLoaded', async function() {
+    console.log('DOM Content Loaded');
+    
+    // Check if animalService is available
+    if (!animalService) {
+        console.error('Animal service is not available!');
+        return;
+    }
+    
     const messageBox = document.getElementById('message-box');
     const table = document.getElementById('animals-list');
     const pagination = document.querySelector('nav[aria-label="Page navigation"]');
-
-    if (animals && animals.length > 0) {
-        messageBox.classList.add('d-none');
-        table.classList.remove('d-none');
-        
-        // Show pagination if more than 5 items
-        if (animals.length > ITEMS_PER_PAGE) {
-            pagination.classList.remove('d-none');
-        } else {
-            pagination.classList.add('d-none');
-        }
-        
-        drawAnimalsTable(animals);
-    } else {
+    
+    console.log('Elements found:', {
+        messageBox: !!messageBox,
+        table: !!table,
+        pagination: !!pagination,
+        tableHTML: table ? table.outerHTML : 'Table not found'
+    });
+    
+    // Show loading message
+    if (messageBox) {
         messageBox.classList.remove('d-none');
-        table.classList.add('d-none');
-        pagination.classList.add('d-none');
+        messageBox.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading animals...';
     }
-}
+    
+    // Wait 3 seconds
+    await waitTho(3000);
+    
+    try {
+        // Get and display animals
+        console.log('Calling animalService.listAnimals()');
+        const animals = animalService.listAnimals();
+        console.log('Animals loaded:', animals);
+        
+        if (animals && animals.length > 0) {
+            console.log('Showing table with', animals.length, 'animals');
+            // Hide message box and show table
+            if (messageBox) messageBox.classList.add('d-none');
+            if (table) {
+                table.classList.remove('d-none');
+                table.style.display = 'table'; // Force table display
+                console.log('Table display style:', table.style.display);
+                console.log('Table classes:', table.className);
+            }
+            
+            // Show pagination if more than 5 items
+            if (pagination) {
+                if (animals.length > ITEMS_PER_PAGE) {
+                    pagination.classList.remove('d-none');
+                } else {
+                    pagination.classList.add('d-none');
+                }
+            }
+            
+            drawAnimalsTable(animals);
+        } else {
+            console.log('No animals found, showing message');
+            if (messageBox) {
+                messageBox.innerHTML = 'There are currently no animals in the database. Try adding some!';
+                messageBox.classList.remove('d-none');
+            }
+            if (table) table.classList.add('d-none');
+            if (pagination) pagination.classList.add('d-none');
+        }
+    } catch (error) {
+        console.error('Error loading animals:', error);
+        if (messageBox) {
+            messageBox.innerHTML = 'Error loading animals. Please try again.';
+            messageBox.classList.remove('d-none');
+        }
+        if (table) table.classList.add('d-none');
+        if (pagination) pagination.classList.add('d-none');
+    }
+
+    // Highlight the Search nav link
+    const searchNavLink = document.querySelector('a.nav-link[href="search.html"]');
+    if (searchNavLink) {
+        searchNavLink.classList.add('active');
+    }
+});
 
 /**
  * Draws the animals table with the provided data
  * @param {Array} animals - List of animals to display
  */
 function drawAnimalsTable(animals) {
+    console.log('Drawing animals table');
     const tbody = document.querySelector('#animals-list tbody');
+    if (!tbody) {
+        console.error('Table body not found!');
+        console.log('Table HTML:', document.getElementById('animals-list')?.outerHTML);
+        return;
+    }
+    
+    // Clear existing content
     tbody.innerHTML = '';
-
+    
     // Calculate slice indexes for pagination
     const start = (currentPage - 1) * ITEMS_PER_PAGE;
     const end = start + ITEMS_PER_PAGE;
     const pageAnimals = animals.slice(start, end);
+    
+    console.log('Drawing', pageAnimals.length, 'animals for current page');
 
     pageAnimals.forEach(animal => {
+        console.log('Creating row for animal:', animal);
         const row = tbody.insertRow();
         
         // Owner cell
@@ -71,9 +132,9 @@ function drawAnimalsTable(animals) {
 
         // Details cell
         const detailsCell = row.insertCell();
-        detailsCell.textContent = animal.toString();
+        detailsCell.textContent = `${animal.name} is a ${animal.breed} with ${animal.eyes} eyes and ${animal.legs} legs that says ${animal.sound}`;
 
-        // Update controls with tooltips and modal
+        // Controls cell
         const controlsCell = row.insertCell();
         controlsCell.innerHTML = `
             <button class="btn btn-sm btn-primary me-2" 
@@ -150,19 +211,47 @@ window.deleteAnimal = function(id) {
             animalService.deleteAnimal(animal);
             
             const animals = animalService.listAnimals();
-            toggleTableVisibility(animals);
+            drawAnimalsTable(animals);
         } catch (error) {
             alert(error.message);
         }
     }
 };
 
-// Add delete modal to search.html
+// Update the delete modal handler
 window.showDeleteModal = function(id) {
     const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
-    document.getElementById('confirmDelete').onclick = () => {
-        deleteAnimal(id);
-        modal.hide();
+    const confirmButton = document.getElementById('confirmDelete');
+    
+    confirmButton.onclick = async () => {
+        // Disable button and show spinner
+        confirmButton.disabled = true;
+        confirmButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deleting...';
+        
+        try {
+            // Wait 3 seconds
+            await waitTho(3000);
+            
+            const animal = animalService.findAnimal(id);
+            animalService.deleteAnimal(animal);
+            
+            // Show success message
+            const messageBox = document.getElementById('message-box');
+            messageBox.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Animal deleted successfully! Refreshing...';
+            messageBox.classList.remove('d-none');
+            
+            // Wait another second to show the success message
+            await waitTho(1000);
+            
+            // Refresh the page
+            window.location.reload();
+        } catch (error) {
+            alert(error.message);
+            // Reset button state
+            confirmButton.disabled = false;
+            confirmButton.innerHTML = 'Delete';
+        }
     };
+    
     modal.show();
 };

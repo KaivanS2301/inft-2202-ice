@@ -2,7 +2,7 @@
  * Name: Kaivan Shah
  * File name: create.js
  * Course: INFT 2202-07 Web Development - CSS  
- * Date: 2025-02-27
+ * Date: 2025-03-04
  * Description: This JavaScript file handles the animal creation and editing functionality.
  */
 
@@ -12,10 +12,21 @@ import Animal from './Animal.js';
 let editMode = false;
 let currentAnimal = null;
 
+// Utility function to wait for a specified time
+function waitTho(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 // Wait for the DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', function() {
-    const animalForm = document.getElementById('animalForm');
-    animalForm.addEventListener('submit', submitAnimalForm);
+    const form = document.getElementById('animalForm');
+    form.addEventListener('submit', submitAnimalForm);
+
+    // Highlight the Create nav link
+    const createNavLink = document.querySelector('a.nav-link[href="create.html"]');
+    if (createNavLink) {
+        createNavLink.classList.add('active');
+    }
 
     // Check if we're in edit mode
     const params = new URL(window.location).searchParams;
@@ -47,7 +58,7 @@ function setupEditForm(id) {
 
     } catch (error) {
         alert(error.message);
-        window.location.href = 'search.html';
+        window.location.href = 'list.html';
     }
 }
 
@@ -140,9 +151,14 @@ async function submitAnimalForm(event) {
     
     const form = event.target;
     const messageBox = document.getElementById('message-box');
+    const submitButton = form.querySelector('button[type="submit"]');
     
     if (validateAnimalForm(form)) {
         try {
+            // Disable form and show loading state
+            setFormLoading(form, true);
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+
             if (editMode) {
                 // Update existing animal
                 currentAnimal.breed = form.breed.value.trim();
@@ -164,7 +180,7 @@ async function submitAnimalForm(event) {
                 animalService.createAnimal(animal);
             }
             
-            // Show success message with spinner
+            // Show success message
             messageBox.innerHTML = `
                 <i class="fas fa-spinner fa-spin"></i> 
                 Animal ${editMode ? 'updated' : 'created'} successfully! Redirecting...
@@ -174,20 +190,38 @@ async function submitAnimalForm(event) {
             messageBox.classList.remove('d-none');
 
             // Wait 3 seconds before redirecting
-            await new Promise(resolve => setTimeout(resolve, 3000));
-            window.location.href = 'list.html';
+            await waitTho(3000);
+            window.location.href = 'search.html';
             
         } catch (error) {
+            setFormLoading(form, false);
+            submitButton.innerHTML = 'Submit';
             showError(form.name, error.message);
-            messageBox.textContent = error.message;
-            messageBox.classList.add('alert-danger');
-            messageBox.classList.remove('alert-success');
+            messageBox.innerHTML = `
+                <div class="alert alert-danger">
+                    ${error.message}
+                </div>
+            `;
             messageBox.classList.remove('d-none');
         }
     } else {
-        messageBox.textContent = 'Please fix the errors in the form.';
-        messageBox.classList.add('alert-danger');
-        messageBox.classList.remove('alert-success');
+        messageBox.innerHTML = `
+            <div class="alert alert-danger">
+                Please fix the errors in the form.
+            </div>
+        `;
         messageBox.classList.remove('d-none');
     }
+}
+
+/**
+ * Sets the loading state of the form
+ * @param {HTMLFormElement} form - The form element
+ * @param {boolean} isLoading - Whether the form is loading
+ */
+function setFormLoading(form, isLoading) {
+    const inputs = form.querySelectorAll('input, button');
+    inputs.forEach(input => {
+        input.disabled = isLoading;
+    });
 }
