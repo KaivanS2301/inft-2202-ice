@@ -1,18 +1,19 @@
 <!--
 Name: Kaivan Shah
-File name: list.html
+File name: ice9.html
 Course: INFT 2202-07 Web Development - CSS  
-Date: 2025-03-04
-Description: This is the list page of the website.
+Date: 2025-02-27
+Description: This is the ICE 9 page for listing and managing animals.
 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>List</title>
+    <title>ICE 9 - Animal List</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/fontawesome.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
     <!-- Navbar -->
@@ -26,8 +27,8 @@ Description: This is the list page of the website.
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="create.html">Create</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="list.html">List</a></li>
-                    <li class="nav-item"><a class="nav-link" href="ice9.html">ICE9</a></li>
+                    <li class="nav-item"><a class="nav-link" href="list.html">List</a></li>
+                    <li class="nav-item"><a class="nav-link" href="ice9.html">ICE 9</a></li>
                     <li class="nav-item"><a class="nav-link" href="search.html">Search</a></li>
                     <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
                     <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
@@ -37,52 +38,32 @@ Description: This is the list page of the website.
     </nav>
 
     <div class="container mt-5">
-        <h1>List Page</h1>
-        
         <!-- Message Box -->
-        <div id="message-box" class="alert alert-info">
-            There are currently no animals in the database. Try adding some!
+        <div id="message-box" class="alert alert-info d-none" role="alert">
+            <i class="fas fa-spinner fa-spin"></i> Loading animals...
         </div>
 
         <!-- Animals Table -->
-        <table id="animals-list" class="table table-striped table-hover d-none">
-            <thead class="table-dark">
-                <tr>
-                    <th>Owner</th>
-                    <th>Details</th>
-                    <th>Controls</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Table rows will be inserted here dynamically -->
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table id="animals-list" class="table table-striped table-hover d-none">
+                <thead>
+                    <tr>
+                        <th>Owner</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Table content will be populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
 
         <!-- Pagination -->
-        <nav aria-label="Page navigation" class="d-none">
+        <nav aria-label="Page navigation" class="mt-3">
             <ul id="pagination" class="pagination justify-content-center">
-                <!-- Pagination will be inserted here dynamically -->
+                <!-- Pagination will be populated by JavaScript -->
             </ul>
         </nav>
-
-        <!-- Delete Confirmation Modal -->
-        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        Are you sure you want to delete this animal?
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-danger" id="confirmDelete">Delete</button>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 
     <!-- Footer -->
@@ -93,7 +74,7 @@ Description: This is the list page of the website.
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/js/fontawesome.min.js"></script>
-    <script src="../client/app/app.js"></script>
-    <script type="module" src="../client/app/animals/list.js"></script>
+    <!-- Note: ice9.js is a module that will fetch animals.json -->
+    <script type="module" src="./app/ice9.js"></script>
 </body>
-</html>
+</html> 
