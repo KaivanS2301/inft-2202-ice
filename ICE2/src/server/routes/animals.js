@@ -7,62 +7,96 @@
  */
 
 import express from 'express';
+import Animal from '../models/Animal.js';
+
 const animalRouter = express.Router();
 
 // List animals (GET /api/animals)
-animalRouter.get('/', (req, res) => {
-    const { page = 1, perPage = 5, owner } = req.query;
-    res.json({
-        message: 'List animals',
-        params: { page, perPage, owner }
-    });
+animalRouter.get('/', async (req, res, next) => {
+    try {
+        const { page = 1, perPage = 5, owner } = req.query;
+        const filter = owner ? { owner } : {}; 
+
+        const animals = await Animal.find(filter)
+            .limit(parseInt(perPage))
+            .skip((parseInt(page) - 1) * parseInt(perPage));
+
+        res.json(animals);
+    } catch (err) {
+        next(err);
+    }
 });
 
 // Get single animal (GET /api/animals/:id)
-animalRouter.get('/:id', (req, res) => {
-    const { id } = req.params;
-    res.json({
-        message: 'Get single animal',
-        id: id
-    });
+animalRouter.get('/:id', async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const animal = await Animal.findById(id);
+        
+        if (!animal) {
+            return res.status(404).json({ message: 'Animal not found' });
+        }
+
+        res.json(animal);
+    } catch (err) {
+        next(err);
+    }
 });
 
 // Create animal (POST /api/animals)
-animalRouter.post('/', (req, res) => {
-    const animalData = req.body;
-    res.json({
-        message: 'Create animal',
-        data: animalData
-    });
+animalRouter.post('/', async (req, res, next) => {
+    try {
+        const { name, breed, eyes, legs, sound } = req.body;
+        const animal = await Animal.create({ name, breed, eyes, legs, sound });
+        res.status(201).json(animal);
+    } catch (err) {
+        next(err);
+    }
 });
 
 // Update animal (PUT /api/animals/:id)
-animalRouter.put('/:id', (req, res) => {
-    const { id } = req.params;
-    const updateData = req.body;
-    res.json({
-        message: 'Update animal',
-        id: id,
-        data: updateData
-    });
+animalRouter.put('/:id', async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const updateData = req.body;
+
+        const updatedAnimal = await Animal.findByIdAndUpdate(id, updateData, { new: true });
+
+        if (!updatedAnimal) {
+            return res.status(404).json({ message: 'Animal not found' });
+        }
+
+        res.json(updatedAnimal);
+    } catch (err) {
+        next(err);
+    }
 });
 
 // Delete animal (DELETE /api/animals/:id)
-animalRouter.delete('/:id', (req, res) => {
-    const { id } = req.params;
-    res.json({
-        message: 'Delete animal',
-        id: id
-    });
+animalRouter.delete('/:id', async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const deletedAnimal = await Animal.findByIdAndDelete(id);
+
+        if (!deletedAnimal) {
+            return res.status(404).json({ message: 'Animal not found' });
+        }
+
+        res.json({ message: 'Animal deleted successfully' });
+    } catch (err) {
+        next(err);
+    }
 });
 
 // Search animals (GET /api/animals/search)
-animalRouter.get('/search', (req, res) => {
-    const { query } = req.query;
-    res.json({
-        message: 'Search animals',
-        query: query
-    });
+animalRouter.get('/search', async (req, res, next) => {
+    try {
+        const { query } = req.query;
+        const results = await Animal.find({ name: { $regex: query, $options: 'i' } });
+        res.json(results);
+    } catch (err) {
+        next(err);
+    }
 });
 
 export default animalRouter;
