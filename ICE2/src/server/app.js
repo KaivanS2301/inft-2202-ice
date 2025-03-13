@@ -11,8 +11,9 @@ import mainRouter from './routes/router.js';
 import animalRouter from './routes/animals.js';
 import mongoose from 'mongoose';
 
+const express = require('express');
 const app = express();
-const PORT = 3000;
+const path = require('path');
 
 
 
@@ -39,7 +40,11 @@ app.use((req, res) => {
 mongoose.connect('mongodb://127.0.0.1:27017/inft-2202-ice');
 console.log('Connected to the database')
 
+// Serve static assets from the client folder
+app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
+
 // Start server
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });

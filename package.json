@@ -5,7 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npx nodemon src/server/app.js"
   },
   "repository": {
     "type": "git",
@@ -16,5 +17,12 @@
   "bugs": {
     "url": "https://github.com/KaivanS2301/inft-2202-ice/issues"
   },
-  "homepage": "https://github.com/KaivanS2301/inft-2202-ice#readme"
+  "homepage": "https://github.com/KaivanS2301/inft-2202-ice#readme",
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "mongoose": "^8.12.1"
+  }
 }

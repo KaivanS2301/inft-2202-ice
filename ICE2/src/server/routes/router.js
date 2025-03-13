@@ -8,6 +8,7 @@
 
 import express from 'express';
 const router = express.Router();
+const searchController = require('../controllers/search');
 
 // Index route
 router.get('/', (req, res) => {
@@ -52,5 +53,8 @@ router.get('/contact', (req, res) => {
         </nav>
     `);
 });
+
+// Search route
+router.get('/search', searchController.handle);
 
 export default router;
