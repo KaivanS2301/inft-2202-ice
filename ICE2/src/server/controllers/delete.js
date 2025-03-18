@@ -1,4 +1,14 @@
 const AnimalService = require('../../services/AnimalService');
+import { checkSchema } from 'express-validator';
+
+export const rules = checkSchema({
+    id: {
+        notEmpty: true,
+        isMongoId: true,
+        errorMessage: 'Valid ID is required',
+        in: ['params']
+    }
+});
 
 async function deleteAnimal(req, res) {
     try {
@@ -17,3 +27,5 @@ async function deleteAnimal(req, res) {
 }
 
 module.exports = deleteAnimal;
+
+export default { rules };

@@ -1,4 +1,20 @@
 const Animal = require('../models/Animal.js'); 
+import { checkSchema } from 'express-validator';
+
+export const rules = checkSchema({
+    name: {
+        optional: true,
+        isString: true,
+        errorMessage: 'Name must be a string',
+        in: ['query']
+    },
+    breed: {
+        optional: true,
+        isString: true,
+        errorMessage: 'Breed must be a string',
+        in: ['query']
+    }
+});
 
 module.exports = {
     handle: async (req, res, next) => {
@@ -40,3 +56,5 @@ module.exports = {
         }
     }
 };
+
+export default { rules };

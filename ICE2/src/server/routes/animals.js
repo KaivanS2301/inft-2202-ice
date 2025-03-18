@@ -8,6 +8,8 @@
 
 import express from 'express';
 import Animal from '../models/Animal.js';
+import { rules } from '../controllers/create.js';
+import { validate } from '../middleware/validation.js';
 
 const animalRouter = express.Router();
 
@@ -97,6 +99,10 @@ animalRouter.get('/search', async (req, res, next) => {
     } catch (err) {
         next(err);
     }
+});
+
+animalRouter.post('/create', rules, validate, (req, res) => {
+    // Handle the request
 });
 
 export default animalRouter;

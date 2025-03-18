@@ -1,4 +1,44 @@
 const AnimalService = require('../../services/AnimalService');
+import { checkSchema } from 'express-validator';
+
+export const rules = checkSchema({
+    id: {
+        notEmpty: true,
+        isMongoId: true,
+        errorMessage: 'Valid ID is required',
+        in: ['params']
+    },
+    name: {
+        optional: true,
+        isString: true,
+        errorMessage: 'Name must be a string',
+        in: ['body']
+    },
+    breed: {
+        optional: true,
+        isString: true,
+        errorMessage: 'Breed must be a string',
+        in: ['body']
+    },
+    eyes: {
+        optional: true,
+        isNumeric: true,
+        errorMessage: 'Eyes must be a number',
+        in: ['body']
+    },
+    legs: {
+        optional: true,
+        isNumeric: true,
+        errorMessage: 'Legs must be a number',
+        in: ['body']
+    },
+    sound: {
+        optional: true,
+        isString: true,
+        errorMessage: 'Sound must be a string',
+        in: ['body']
+    }
+});
 
 async function update(req, res) {
     try {
@@ -18,3 +58,4 @@ async function update(req, res) {
 }
 
 module.exports = update;
+export default { rules };

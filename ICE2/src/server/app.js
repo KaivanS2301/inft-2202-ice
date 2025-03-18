@@ -10,6 +10,8 @@ import express from 'express';
 import mainRouter from './routes/router.js';
 import animalRouter from './routes/animals.js';
 import mongoose from 'mongoose';
+import { logRequest } from './middleware/logging.js';
+import { errorHandler } from './middleware/errorHandler.js';
 
 const express = require('express');
 const app = express();
@@ -20,16 +22,14 @@ const path = require('path');
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(logRequest); // Add logging middleware here
 
-// Use routerss
+// Use routers
 app.use('/', mainRouter);
 app.use('/routes/animals', animalRouter);
 
 // Error handling middleware
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).send('Something broke!');
-});
+app.use(errorHandler); // Use the new error handler middleware
 
 // 404 handler
 app.use((req, res) => {

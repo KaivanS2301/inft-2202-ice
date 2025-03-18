@@ -1,4 +1,36 @@
 import AnimalService from '../models/Animal.js'
+import { checkSchema } from 'express-validator';
+
+export const rules = checkSchema({
+        name: {
+            notEmpty: true,
+            errorMessage: 'Name is required',
+            in: ['body']
+        },
+        breed: {
+            notEmpty: true,
+            errorMessage: 'Breed is required',
+            in: ['body']
+        },
+        eyes: {
+            notEmpty: true,
+            isNumeric: true,
+            errorMessage: 'Eyes is required',
+            in: ['body']
+        },
+        legs: {
+            notEmpty: true,
+            isNumeric: true,
+            errorMessage: 'Legs is required',
+            in: ['body']
+        },
+        sound: {
+            notEmpty: true,
+            errorMessage: 'Sound is required',
+            in: ['body']
+        },
+    
+});
 
 const handle = async (req, res, nest) => {
     try {

@@ -1,4 +1,14 @@
  import AnimalService from "../services/AnimalService";
+ import { checkSchema } from 'express-validator';
+
+export const rules = checkSchema({
+    id: {
+        notEmpty: true,
+        isMongoId: true,
+        errorMessage: 'Valid ID is required',
+        in: ['params']
+    }
+});
 
  const handle = async (req, res, next) => {
     try {
@@ -10,4 +20,4 @@
             }
  }
 
- export default { handle }
+ export default { rules };
